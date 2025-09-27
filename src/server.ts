@@ -28,3 +28,8 @@ const port = Number(process.env.PORT) || 3000;
 app.listen(port, () => console.log(`starting app on: 0.0.0.0:${port}`));
 
 export default app; // needed for supertest in jasmine
+
+app.use((err: unknown, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+  console.error('Unhandled error:', err);
+  res.status(500).json({ error: 'Internal server error' });
+});

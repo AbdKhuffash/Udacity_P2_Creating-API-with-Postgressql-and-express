@@ -1,6 +1,6 @@
 # UDACITY_P2_STOREFRONT_BACKEND_API
 
-![Last Commit](https://img.shields.io/githublast-commit/AbdKhuffash/Udacity_P2_Creating-API-with-Postgressql-and-express?color=blue&label=last%20commit)
+![Last Commit](https://img.shields.io/github/last-commit/AbdKhuffash/Udacity_P2_Creating-API-with-Postgressql-and-express?color=blue&label=last%20commit)
 ![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?logo=typescript&logoColor=white)
 ![Languages](https://img.shields.io/badge/languages-TS%2C%20SQL%2C%20JSON-brightgreen)
 
@@ -332,3 +332,4 @@ Authorization: Bearer <JWT>
 
 ## 🔙 Return
 [Back to Top](#udacity_p2_storefront_backend_api)
+

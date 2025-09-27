@@ -1,0 +1,50 @@
+﻿# -----------------------------
+# Node / Package Managers
+# -----------------------------
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+package-lock.json
+
+# -----------------------------
+# TypeScript / Build Artifacts
+# -----------------------------
+dist/
+build/
+coverage/
+.nyc_output/
+*.tsbuildinfo
+
+# -----------------------------
+# Environment & Secrets
+# -----------------------------
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# -----------------------------
+# Logs / Temp files
+# -----------------------------
+logs/
+*.log
+tmp/
+temp/
+*.tmp
+
+# -----------------------------
+# OS & Editor junk
+# -----------------------------
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+
+
+pgdata/
+postgres-data/
+postgres/

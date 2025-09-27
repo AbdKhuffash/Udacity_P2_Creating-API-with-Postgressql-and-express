@@ -23,18 +23,18 @@
 ---
 
 ## 📑 Table of Contents
-- Overview
-- Getting Started
-  - Prerequisites
-  - Install & Setup
-  - Environment Variables
-  - Database (Docker)
-  - Migrations
-  - Run the Server
-  - Testing
-- API Usage
-- Authentication & Headers
-- Troubleshooting
+- [Overview](#overview)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Install & Setup](#install-setup)
+  - [Environment Variables](#environmnet-variable)
+  - [Database (Docker)](#database-docker)
+  - [Migrations](#migration)
+  - [Run the Server](#run-the-server)
+  - [Testing](#testing)
+- [API Usage](#api-usage)
+- [Authentication & Headers](#authentication-headers)
+- [Troubleshooting](#troubleshooting)
 
 ---
 
@@ -332,4 +332,5 @@ Authorization: Bearer <JWT>
 
 ## 🔙 Return
 [Back to Top](#udacity_p2_storefront_backend_api)
+
 

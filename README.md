@@ -1,64 +1,85 @@
-Storefront Backend API — README
-================================
+# UDACITY_P2_STOREFRONT_BACKEND_API
 
-This project is a Node/Express API with PostgreSQL that powers a simple storefront.
-It uses TypeScript, db-migrate, bcrypt, and JWT for auth.
+![Last Commit](https://img.shields.io/githublast-commit/AbdKhuffash/Udacity_P2_Creating-API-with-Postgressql-and-express?color=blue&label=last%20commit)
+![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?logo=typescript&logoColor=white)
+![Languages](https://img.shields.io/badge/languages-TS%2C%20SQL%2C%20JSON-brightgreen)
 
+---
 
+## 🚀 Built with the tools and technologies:
 
+![Node.js](https://img.shields.io/badge/Node.js-339933?logo=node.js&logoColor=white)
+![Express](https://img.shields.io/badge/Express-black?logo=express&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?logo=postgresql&logoColor=white)
+![db-migrate](https://img.shields.io/badge/db--migrate-000000)
+![bcrypt](https://img.shields.io/badge/bcrypt-grey)
+![JWT](https://img.shields.io/badge/JWT-black)
+![dotenv](https://img.shields.io/badge/.ENV-ECD53F?logo=dotenv&logoColor=black)
+![Yarn](https://img.shields.io/badge/Yarn-2C8EBB?logo=yarn&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?logo=typescript&logoColor=white)
+![Jasmine](https://img.shields.io/badge/Jasmine-8A4182?logo=jasmine&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white)
 
-## Tech Stack
+---
 
-- Node.js + Express
-- TypeScript
-- PostgreSQL 15 (via Docker)
-- db-migrate (migrations)
-- jsonwebtoken (JWT)
-- bcrypt (password hashing)
-- jasmine (tests)
-- dotenv (env vars)
+## 📑 Table of Contents
+- Overview
+- Getting Started
+  - Prerequisites
+  - Install & Setup
+  - Environment Variables
+  - Database (Docker)
+  - Migrations
+  - Run the Server
+  - Testing
+- API Usage
+- Authentication & Headers
+- Troubleshooting
 
+---
 
-## Ports
+## 📖 Overview
 
-- **API**: `http://localhost:3000`
-- **PostgreSQL (host)**: `localhost:5433` → (mapped to container `5432`)
+**Storefront Backend API** — A REST API for a simple e-commerce storefront.
 
+Features:
+- 🛍️ **Products**: list, show, and create (protected).
+- 👤 **Users**: register (returns JWT), login (returns JWT), list/show (protected).
+- 🧾 **Orders**: create/update/delete orders, add items, and get current/completed orders per user (protected).
+- 🗄️ **PostgreSQL** + **db-migrate** migrations.
+- 🧪 **Jasmine** tests for models and endpoints.
 
-## Quick Start
+Defaults:
+- API base URL: `http://localhost:3000`
+- Postgres (via Docker): host port **5433** mapped to container **5432**
 
+---
+
+## 🚀 Getting Started
+
+### ✅ Prerequisites
+- **Node.js** 18+ (or 20+)
+- **Yarn** (or npm)
+- **Docker** & **Docker Compose**
+
+---
+
+### ⚙️ Install & Setup
 ```bash
-# 1) Install dependencies
+git clone https://github.com/USERNAME/REPO_NAME.git
+cd REPO_NAME
 yarn install
-
-# 2) Start Postgres with Docker
-docker compose up -d
-
-# 3) Create & migrate databases
-# Dev:
-yarn migrate:up
-
-# Test (recreates and migrates test DB):
-yarn test:clean
-
-# 4) Start the API (dev)
-yarn watch
-# or run compiled server (if using JavaScript build):
-# node dist/server.js
-
-# 5) Run tests
-yarn test
 ```
 
+---
 
-## Environment Variables
+### 🔐 Environment Variables
+Create a `.env` at project root (this file is gitignored). Example:
 
-Create a `.env` file at the project root. **Do not commit it** (see `.gitignore`).
-
-Example:
 ```
 PORT=3000
 ENV=dev
+NODE_ENV=development
 
 POSTGRES_HOST=127.0.0.1
 POSTGRES_PORT=5433
@@ -73,39 +94,26 @@ JWT_SECRET=superSecretJwt
 CORS_ORIGIN=*
 ```
 
-> **Important**: Make sure `POSTGRES_PASSWORD` matches the password in `docker-compose.yml`.  
-> This template uses `postgres`. If you change one, change both.
+> Ensure `POSTGRES_PASSWORD` matches the one in `docker-compose.yml`.
 
+---
 
-## Database & Migrations
-
-Postgres runs in Docker using `docker-compose.yml`:
-
-```yaml
-services:
-  postgres:
-    image: postgres:15
-    ports:
-      - "5433:5432"
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: shopping_dev
-    volumes:
-      - "postgres:/var/lib/postgresql/data"
-volumes:
-  postgres:
+### 🗄️ Database (Docker)
+Start Postgres:
+```bash
+docker compose up -d
 ```
 
-### Migrations commands
+Create the **test** database once (inside the container):
+```bash
+# Find the running Postgres container name
+docker ps
 
-- Dev up: `yarn migrate:up`
-- Dev down: `yarn migrate:down`
-- Test reset+up+build: `yarn test:clean`
-- Run tests: `yarn test`
+# Create the test DB
+docker exec -it <pg-container> psql -U postgres -d postgres -c "CREATE DATABASE shopping_test;"
+```
 
-`database.json` is configured for db-migrate:
-
+**database.json** (used by db-migrate):
 ```json
 {
   "dev": {
@@ -127,144 +135,200 @@ volumes:
 }
 ```
 
-### Using psql inside the container (no local psql needed)
+---
 
+### 🧱 Migrations
+Dev DB:
 ```bash
-# List databases
-docker exec -it <container_name> psql -U postgres -d postgres -c "\l"
-
-# Connect to test DB
-docker exec -it <container_name> psql -U postgres -d shopping_test
-
-# List tables in test DB
-docker exec -it <container_name> psql -U postgres -d shopping_test -c "\dt"
+yarn migrate:up
 ```
 
-Where `<container_name>` looks like `nd0067-c2-creating-an-api-with-postgresql-and-express-project-starter-postgres-1` (use `docker ps`).
-
-
-## API Overview
-
-Authentication uses JWT. Registering a user returns a token. Some routes require the `Authorization: Bearer <token>` header.
-
-- **Users**
-  - `POST /users` — Register user (returns `{ user, token }`)
-  - `POST /users/auth` — Login (returns `{ token }`)
-  - `GET /users` — List users (**token required**)
-  - `GET /users/:id` — Show user (**token required**)
-
-- **Products**
-  - `GET /products` — List products
-  - `GET /products/:id` — Show product
-  - `POST /products` — Create product (**token required**)
-  - `GET /products/top` — Top 5 popular (optional)
-  - `GET /products/category/:category` — Filter by category (optional)
-
-- **Orders** (all **token required**)
-  - `POST /orders` — Create order
-  - `PUT /orders/:id` — Update status
-  - `DELETE /orders/:id` — Delete order
-  - `POST /orders/:id/items` — Add product to order
-  - `GET /orders/user/:userId/current` — Current active order by user
-  - `GET /orders/user/:userId/completed` — (optional) Completed orders by user
-
-
-## Data Shapes (TypeScript)
-
-```ts
-// src/models/user.ts
-export type User = {
-  id?: number;
-  email: string;
-  first_name: string;
-  last_name: string;
-  password?: string;
-};
-
-// src/models/product.ts
-export type Product = {
-  id?: number;
-  name: string;
-  price: number;
-  category?: string;
-};
-
-// src/models/order.ts
-export type Order = {
-  id?: number;
-  user_id: number;
-  status: 'active' | 'completed';
-};
-
-export type OrderItem = {
-  id?: number;
-  order_id: number;
-  product_id: number;
-  quantity: number;
-};
-```
-
-## Database Schema (tables)
-
-- **users**
-  - `id SERIAL PRIMARY KEY`
-  - `email VARCHAR(255) UNIQUE NOT NULL`
-  - `first_name VARCHAR(100) NOT NULL`
-  - `last_name VARCHAR(100) NOT NULL`
-  - `password_digest VARCHAR(255) NOT NULL`
-  - `created_at TIMESTAMP DEFAULT NOW()`
-  - `updated_at TIMESTAMP DEFAULT NOW()`
-
-- **products**
-  - `id SERIAL PRIMARY KEY`
-  - `name VARCHAR(255) NOT NULL`
-  - `price NUMERIC(10,2) NOT NULL CHECK (price >= 0)`
-  - `category VARCHAR(100)`
-  - `created_at TIMESTAMP DEFAULT NOW()`
-  - `updated_at TIMESTAMP DEFAULT NOW()`
-
-- **orders**
-  - `id SERIAL PRIMARY KEY`
-  - `user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE`
-  - `status VARCHAR(20) NOT NULL CHECK (status IN ('active','completed'))`
-  - `created_at TIMESTAMP DEFAULT NOW()`
-  - `updated_at TIMESTAMP DEFAULT NOW()`
-
-- **order_items**
-  - `id SERIAL PRIMARY KEY`
-  - `order_id INT NOT NULL REFERENCES orders(id) ON DELETE CASCADE`
-  - `product_id INT NOT NULL REFERENCES products(id)`
-  - `quantity INT NOT NULL CHECK (quantity > 0)`
-  - `UNIQUE (order_id, product_id)`
-
-
-## Running the API
-
+Test DB:
 ```bash
-yarn watch          # dev mode (tsc-watch -> dist -> node)
-# or
-yarn build && node dist/server.js
+yarn migrate:test:reset && yarn migrate:test:up
 ```
-
-API will start at `http://localhost:3000`.
-
-
-## Authentication
-
-- Register: `POST /users` → returns `{ user, token }`
-- Login: `POST /users/auth` → returns `{ token }`
-- For protected endpoints, include header:
-  - `Authorization: Bearer <token>`
-
-
-## Troubleshooting
-
-- **Port in use (5433)**: Change the host port in `docker-compose.yml` (e.g., `5434:5432`) and in `.env` & `database.json`.
-- **"database ... does not exist"**: Ensure you ran migrations. For test DB: `yarn test:clean`. For dev DB: `yarn migrate:up`.
-- **"password authentication failed"**: Ensure `POSTGRES_PASSWORD` in `.env` and `database.json` matches `docker-compose.yml`.
-- **No `psql` locally**: Use `docker exec` examples above.
-- **JWT 401s in tests**: Make sure tests register or login first and pass `Authorization: Bearer <token>` header.
 
 ---
 
-© 2025 Storefront Backend API
+### ▶️ Run the Server
+**Option A: Watch (auto-compile & run)**
+```bash
+yarn watch
+```
+
+**Option B: Build then run**
+```bash
+yarn build
+node dist/server.js
+```
+
+Server URL: `http://localhost:3000`
+
+---
+
+### 🧪 Testing
+Full clean cycle:
+```bash
+yarn test:clean && yarn test
+```
+
+Just the tests (if DB prepared):
+```bash
+yarn test
+```
+
+---
+
+## 🌐 API Usage
+
+### Users
+- **Register**
+  ```
+  POST /users
+  Content-Type: application/json
+
+  {
+    "email": "john@ex.com",
+    "first_name": "John",
+    "last_name": "Doe",
+    "password": "secret"
+  }
+  ```
+  Response: `201 Created` → `{ user: { id, email, first_name, last_name }, token }`
+
+- **Login**
+  ```
+  POST /users/auth
+  Content-Type: application/json
+
+  { "email": "john@ex.com", "password": "secret" }
+  ```
+  Response: `200 OK` → `{ token }`
+
+- **List** (JWT)
+  ```
+  GET /users
+  Authorization: Bearer <token>
+  ```
+
+- **Show** (JWT)
+  ```
+  GET /users/:id
+  Authorization: Bearer <token>
+  ```
+
+---
+
+### Products
+- **Create** (JWT)
+  ```
+  POST /products
+  Authorization: Bearer <token>
+  Content-Type: application/json
+
+  { "name": "Mouse", "price": 25, "category": "electronics" }
+  ```
+  Response: `201 Created`
+
+- **Index**
+  ```
+  GET /products
+  ```
+
+- **Show**
+  ```
+  GET /products/:id
+  ```
+
+- **Top 5 (optional)**
+  ```
+  GET /products/top
+  ```
+
+- **By Category (optional)**
+  ```
+  GET /products/category/:category
+  ```
+
+---
+
+### Orders (JWT)
+- **Create**
+  ```
+  POST /orders
+  Authorization: Bearer <token>
+  Content-Type: application/json
+
+  { "user_id": 1, "status": "active" }
+  ```
+
+- **Update status**
+  ```
+  PUT /orders/:id
+  Authorization: Bearer <token>
+  Content-Type: application/json
+
+  { "status": "completed" }
+  ```
+
+- **Delete**
+  ```
+  DELETE /orders/:id
+  Authorization: Bearer <token>
+  ```
+
+- **Add item**
+  ```
+  POST /orders/:id/items
+  Authorization: Bearer <token>
+  Content-Type: application/json
+
+  { "product_id": 3, "quantity": 2 }
+  ```
+
+- **Current order for user**
+  ```
+  GET /orders/user/:userId/current
+  Authorization: Bearer <token>
+  ```
+
+- **Completed orders for user (optional)**
+  ```
+  GET /orders/user/:userId/completed
+  Authorization: Bearer <token>
+  ```
+
+---
+
+## 🔑 Authentication & Headers
+Protected endpoints require:
+```
+Authorization: Bearer <JWT>
+```
+- Tokens are returned by `POST /users` and `POST /users/auth`.
+- Passwords are hashed via `bcrypt` using `SALT_ROUNDS` and `BCRYPT_PEPPER`.
+
+---
+
+## 🔧 Troubleshooting
+- **“relation X does not exist”**
+  - Run migrations for the correct env:
+    - Dev: `yarn migrate:up`
+    - Test: `yarn migrate:test:reset && yarn migrate:test:up`
+
+- **“password authentication failed”**
+  - Ensure `.env` DB password matches `docker-compose.yml`.
+
+- **“database shopping_test does not exist”**
+  - Create it inside the container (see DB section).
+
+- **401 Unauthorized on protected routes**
+  - Include `Authorization: Bearer <token>` from /users or /users/auth.
+
+- **Port conflicts**
+  - If `5433` is taken, change Docker mapping (e.g., `5434:5432`) and update `.env` & `database.json`.
+
+---
+
+## 🔙 Return
+[Back to Top](#udacity_p2_storefront_backend_api)

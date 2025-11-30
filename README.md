@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # UDACITY_P2_STOREFRONT_BACKEND_API
 
 ![Last Commit](https://img.shields.io/github/last-commit/AbdKhuffash/Udacity_P2_Creating-API-with-Postgressql-and-express?color=blue&label=last%20commit)
@@ -333,6 +332,7 @@ Authorization: Bearer <JWT>
 
 ## 🔙 Return
 [Back to Top](#udacity_p2_storefront_backend_api)
+
 
 
 =======
@@ -673,4 +673,4 @@ Authorization: Bearer <JWT>
 
 
 
->>>>>>> fbeee19 (t)
+
